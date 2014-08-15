@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{site.name}}</title>
+        <link href="{{static_url('css/bootstrap.min.css')}}" rel="stylesheet" media="screen">
+        <link href="{{static_url('css/shire.css')}}" rel="stylesheet" media="screen">
+        {% block css %}
+        {% endblock %}
+    </head>
+    <body>
+        <div class="container">
+            <div class="content">
+                {% block body %}
+                {% endblock %}
+            </div>
+            {{ xsrf_form_html() }}
+        </div>
+        <footer>
+            Enjoy Study, 2014
+        </footer>
+
+        <script src="{{static_url('js/jquery-1.11.1.min.js')}}"></script>
+        <script src="{{static_url('js/jquery.cookie.js')}}"></script>
+        <script src="{{static_url('js/bootstrap.min.js')}}"></script>
+        <script src="{{static_url('js/shire.js')}}"></script>
+
+        {% block js %}
+        {% endblock %}
+    </body>
+</html>

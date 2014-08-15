@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="list-box">
+    <div class="list-group">
+        {% if not pages %}
+        <div class="list-group-item">
+            Currently no pages.
+        </div>
+        {% endif %}
+        {% for page in pages %}
+        <a href="/_{{page.url}}" class="list-group-item">
+            &nbsp; &nbsp;<span style="display:inline-block;min-width:270px;">{{page.url}}</span>
+            &nbsp;&nbsp;<span style="display:inline-block;min-width:200px;">{{page.title}}</span>
+        </a>
+        {% endfor %}
+    </div>
+
+    <a href="#" class="btn btn-success" id="new"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp; New Page</a>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+var urls = [{% for page in pages %}"{{page.url}}",{% endfor %}]
+$('#new').click(function() {
+    var url = prompt("Please enter the url", "/");
+    if (url.length < 1 || url[0] != '/') {
+        alert('Url must start with /');
+    }
+    else if (urls.indexOf(url) != -1) {
+        alert('This url already exists');
+    }
+    else {
+        window.location.href = '/_' + url;
+    }
+    return false;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% set active_page = 'users' -%}
+
+{% block body %}
+<div class="list-box">
+    <div class="list-group">
+        {% if not users %}
+        <div class="list-group-item">
+            Currently no users.
+        </div>
+        {% endif %}
+        {% for user in users %}
+        <a href="user/{{user._id}}" class="list-group-item">
+            <i class="glyphicon glyphicon-user"></i>
+            &nbsp; &nbsp;<span style="display:inline-block;min-width:70px;">{{user.name}}</span>
+            &nbsp;&nbsp;<span style="display:inline-block;min-width:200px;">{{user.mail}}</span>
+            &nbsp;&nbsp;<div style="display:inline-block;min-width:120px;"><span class="label label-success">{{user.role_str}}</span></div>
+            {% if not user.valid %} &nbsp;&nbsp;<span class="label label-danger">Banned</span>{% endif %} 
+        </a>
+        {% endfor %}
+    </div>
+
+    <a href="user/" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp; New user</a>
+</div>
+
+{% endblock %}

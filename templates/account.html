@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% set active_page = 'users' -%}
+
+{% block body %}
+<div class="list-box form-horizontal">
+    <div class="form-group">
+        <label class="control-label col-sm-4" for="mail">Email</label>
+        <div class="col-sm-8">
+            <input type="email" class="form-control" disabled="disabled" id="mail" value="{{user.mail}}" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-4" for="name">Name</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control" id="name" value="{{user.name}}" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-4" for="cpwd">Current password</label>
+        <div class="col-sm-8">
+            <input type="password" class="form-control" id="cpwd" value="" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-4" for="npwd">New password</label>
+        <div class="col-sm-8">
+            <input type="password" class="form-control" id="npwd" value="" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-4" for="cnpwd">Confirm new password</label>
+        <div class="col-sm-8">
+            <input type="password" class="form-control" id="cnpwd" value="" />
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label class="control-label col-sm-4"></label>
+        <div class="col-sm-8">
+            <span class="label label-success">{{user.role_str}}</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-8">
+            <button class="save btn btn-success">Save</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="/static/js/sha1.js"></script>
+<script>
+function hash(str){
+    return CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex).slice(0, 16);
+}
+
+$(function() {
+    var url = window.location.pathname;
+    $('.save').click(function() {
+        var name = $('#name').val();
+        var cpwd = $('#cpwd').val();
+        var npwd = $('#npwd').val();
+        var cnpwd = $('#cnpwd').val();
+
+        if (name.length == 0) {
+            alert('Invalid name.');
+            return;
+        }
+        if (cpwd.length == 0) {
+            alert('Invalid current password.');
+            return;
+        }
+        if (npwd.length == 0) {
+            alert('Invalid new password.');
+            return;
+        }
+        if (cnpwd.length == 0) {
+            alert('Invalid confirm new password.');
+            return;
+        }
+        if (npwd != cnpwd) {
+            alert('New password != Confirm new password');
+            return;
+        }
+
+        var salt = '{{user.salt}}';
+        var new_salt = '{{new_salt}}';
+
+        var cpwd = hash(cpwd + '|' + salt);
+        //alert(cpwd);
+        var npwd = hash(npwd + '|' + new_salt);
+
+        shire.gui_post(url, {'name': name, 'action':'save', 'cpwd': cpwd, 'npwd': npwd, 'new_salt': new_salt}, function() {
+            alert('Done.');
+            window.location.reload();
+        }, [$(this)]);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,3 @@
+Jinja2==2.7
+pymongo==2.5.2
+tornado==3.1

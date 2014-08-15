@@ -1,0 +1,64 @@
+{% extends "b.html" %}
+{% set active_page = 'home' -%}
+
+
+{% block body %}
+<form class="form list-box form-horizontal">
+    <div class="well">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="mail">Email</label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="mail" value="" autofocus required/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="pwd">Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="pwd" value="" required/>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+                <button class="signin btn btn-success">Signin</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/static/js/sha1.js"></script>
+
+<script>
+function hash(str, passphrase){
+    return CryptoJS.AES(str, passphrase).toString(CryptoJS.enc.Hex);
+}
+
+$(function() {
+    var url = window.location.pathname;
+    $('form.list-box').submit(function(e){
+        e.preventDefault();
+
+        var mail = $('#mail').val();
+        var pwd = $('#pwd').val();
+        var passphrase = '{{passphrase}}';
+
+        if (pwd) {
+            //pwd = hash(pwd, passphrase);
+        }
+        //alert(pwd);
+        //return;
+
+        shire.gui_post(url, {'mail': mail, 'pwd': pwd}, function(data) {
+            window.location = data['url'];
+        }, 
+        $(this).find('btn.signin'))
+        .always(function(){
+            $('#pwd').val('');
+            $('#pwd').focus();
+        });
+    });
+});
+</script>
+{% endblock %}
+

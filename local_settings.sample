@@ -1,0 +1,2 @@
+from tornado.options import options
+options.cookie_secret = 'hahaha'

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% set active_page = 'users' -%}
+
+{% block body %}
+<div class="list-box form-horizontal">
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="mail">Email</label>
+        <div class="col-sm-10">
+            <input type="email" class="form-control" {{'disabled="disabled"' if user else ''}} id="mail" value="{{user.mail}}" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="name">Name</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="name" value="{{user.name}}" />
+        </div>
+    </div>
+
+    {% if user %}
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="pwd">Password</label>
+        <div class="col-sm-10">
+            <input type="password" class="form-control" id="pwd" value="" />
+            {% if user %}
+            <span class="help-block">Leave blank unless to reset password.</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="role">Role</label>
+        <div class="col-sm-10">
+            <select id="role" class="form-control">
+                {% for sys, role in roles %}
+                <option value="{{role}}" {{'selected="selected"' if role == user.role else ''}}>{{sys}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    {% if user %}
+    <div class="form-group">
+        <label class="control-label col-sm-2"></label>
+        <div class="col-sm-10">
+            {% if user.valid %}
+            <span class="label label-success">Active</span>
+            {% else %}
+            <span class="label label-danger">Banned</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <button class="save btn btn-success">Save</button>
+            {% if user %}
+            <button class="delete btn btn-danger">{{'Ban' if user.valid else 'Unban'}}</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="/static/js/sha1.js"></script>
+
+<script>
+function hash(str){
+    return CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex).slice(0, 16);
+}
+
+$(function() {
+    var url = window.location.pathname;
+    $('.save').click(function() {
+        var mail = $('#mail').val();
+        var name = $('#name').val();
+        var role = $('#role').val();
+        var pwd = $('#pwd').val();
+        var new_salt = '{{new_salt}}';
+
+        if (pwd) {
+            pwd = hash(pwd + '|' + new_salt);
+        }
+
+        shire.gui_post(url, {'mail': mail, 'name': name, 'role': role, 'action':'save', 'pwd': pwd, 'new_salt':new_salt}, function() {
+            window.location = '../users';
+        }, [$(this)]);
+    });
+    $('.delete').click(function() {
+        shire.gui_post(url, {'action':'delete'}, function() {
+            window.location = '../users';
+        }, [$(this)]);
+    });
+});
+</script>
+{% endblock %}
