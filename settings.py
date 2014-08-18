@@ -11,7 +11,7 @@ def define_app_options():
 
     define('mongodb_host', default="127.0.0.1")
     define('mongodb_port', default=27017)
-    define('mongodb_name', default="shire")
+    define('mongodb_name', default="first")
 
     define('port', default=8004)
 
