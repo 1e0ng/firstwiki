@@ -30,8 +30,8 @@
 <script src="/static/js/sha1.js"></script>
 
 <script>
-function hash(str, passphrase){
-    return CryptoJS.AES(str, passphrase).toString(CryptoJS.enc.Hex);
+function hash(str, salt){
+    return CryptoJS.SHA1(str + '|' +  salt).toString(CryptoJS.enc.Hex).slice(0, 16);
 }
 
 $(function() {
@@ -44,10 +44,8 @@ $(function() {
         var passphrase = '{{passphrase}}';
 
         if (pwd) {
-            //pwd = hash(pwd, passphrase);
+            pwd = hash(pwd, mail);
         }
-        //alert(pwd);
-        //return;
 
         shire.gui_post(url, {'mail': mail, 'pwd': pwd}, function(data) {
             window.location = data['url'];

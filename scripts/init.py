@@ -16,7 +16,7 @@ class Runner(Scaffold):
         self.db.page.ensure_index([('url',1)], unique=True)
         logging.info('Indexes built.')
 
-        root_user = self.db.user.find_one({'mail': 'root'}) or {}
+        root_user = self.db.user.find_one({'mail': 'root@root'}) or {}
         root_user.update({
             "name": "root",
             "created_at": time.time(),
@@ -26,7 +26,7 @@ class Runner(Scaffold):
             "mail": "root@root",
             "salt": "dzwOrPqGdgOwBqyV"
         })
-        root_user['pwd'] = hash_pwd('802debaed8f55ffc', root_user['salt'])
+        root_user['pwd'] = hash_pwd(hash_pwd('802debaed8f55ffc', root_user['mail']), root_user['salt'])
 
         self.db.user.save(root_user)
 
