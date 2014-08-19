@@ -85,7 +85,6 @@ class BaseHandler(RequestHandler):
         return self.request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
     def dumps(self, obj):
-        obj = self.sorted(obj)
         return dumps(obj, ensure_ascii=False, indent=4, sort_keys=True)
 
     def loads(self, s):
