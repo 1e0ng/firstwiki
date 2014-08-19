@@ -14,12 +14,6 @@ body{
 .page{
     width: 760px;
     margin:0 auto;
-}
-.menua{
-    margin:25px 0;
-}
-.page .content{
-    margin-top:25px;
     white-space: pre-wrap;       /* css-3 */
     white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
     white-space: -pre-wrap;      /* Opera 4-6 */
