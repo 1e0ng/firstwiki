@@ -1,19 +1,22 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div class="list-box">
-    <div class="list-group">
-        {% if not pages %}
-        <div class="list-group-item">
-            Currently no pages.
-        </div>
-        {% endif %}
-        {% for page in pages %}
-        <a href="{{page.url}}" class="list-group-item">
-            &nbsp;&nbsp;<span style="display:inline-block;">{{page.title}}</span>
-        </a>
-        {% endfor %}
+<div class="page">
+    <div class="menua">
+        <a href="/">Home</a>
     </div>
+    {% if not pages %}
+    <h4>
+        Currently no pages.
+    </h4>
+    {% endif %}
+    {% for page in pages -%}
+    <div>
+        <a href="{{page.url}}" style="font-size:28px;">
+            {{- page.title -}}
+        </a>
+    </div>
+    {%- endfor %}
 </div>
 
 {% endblock %}
