@@ -7,11 +7,11 @@ from shireweb import ShireWeb
 if __name__ == "__main__":
     routes = [
         (r'/', 'controller.HomeHandler'),
+        (r'/users/?', 'handlers.UserListHandler'),
+        (r'/user/?(\w*)', 'handlers.UserHandler'),
+        (r'/account', 'handlers.AccountHandler'),
 
         (r'/_', 'controller.AdminHandler'),
-        (r'/_/users/?', 'handlers.UserListHandler'),
-        (r'/_/user/?(\w*)', 'handlers.UserHandler'),
-        (r'/_/account', 'handlers.AccountHandler'),
         (r'/_(/.*)', 'controller.PageEditHandler'),
 
         (r'/signin', 'handlers.SigninHandler'),
