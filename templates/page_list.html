@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="list-box">
+    <div class="list-group">
+        {% if not pages %}
+        <div class="list-group-item">
+            Currently no pages.
+        </div>
+        {% endif %}
+        {% for page in pages %}
+        <a href="{{page.url}}" class="list-group-item">
+            &nbsp;&nbsp;<span style="display:inline-block;">{{page.title}}</span>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
