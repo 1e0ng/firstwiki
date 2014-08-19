@@ -8,7 +8,6 @@ class HomeHandler(BaseHandler):
 
 class AdminHandler(BaseHandler):
     def get(self):
-        self.db.page.ensure_index([('url',1)], unique=True)
         pages = list(self.db.page.find(fields={'url':1, 'title':1}, sort=[('viewed', -1), ('_id', 1)]))
         self.render('_page_list.html', pages=pages)
 
