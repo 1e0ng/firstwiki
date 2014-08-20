@@ -35,7 +35,7 @@ class BaseHandler(RequestHandler):
             return False
         if path  == '/users' or path.startswith('/user/'):
             return self.r % 100 == 0
-        if path.startswith('_'):
+        if path.startswith('/_'):
             return self.r % 100 == 0 or self.r == 101
         return True
 
@@ -99,6 +99,7 @@ class BaseHandler(RequestHandler):
     def render(self, template, **kwargs):
         kwargs['navigation_bar'] = [i for i in [
             ('/users', 'users', 'Users'),
+            ('/_', 'edit', 'Edit'),
         ] if self.has_permission(i[0])]
         kwargs['site'] = self.db.site.find_one() or {'name': 'Shire'}
 
