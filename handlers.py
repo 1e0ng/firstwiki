@@ -68,13 +68,11 @@ class BaseHandler(RequestHandler):
         user_json = self.get_secure_cookie("user")
         if user_json:
             user = json_decode(user_json)
-            if user['login_sn'] == self.get_cookie("login_sn"):
+            user_db = self.db.user.find_one({'mail': user['email']})
+            if user_db and user_db['valid'] and user['login_sn'] == self.get_cookie("login_sn"):
                 return user
-            else:
-                self.clear_cookie('user', domain=self.get_main_domain())
-        else:
-            self.clear_cookie('user', domain=self.get_main_domain())
 
+        self.clear_cookie('user', domain=self.get_main_domain())
         return None
 
     def has_argument(self, name):
