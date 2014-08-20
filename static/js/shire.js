@@ -8,7 +8,7 @@ function getCookie(name) {
 shire.ajax = function(url, type, args, callback){
     return $.ajax({
         'type': type,
-        'timeout': 60000,
+        'timeout': 10000,
         'url': url,
         'data': args,
         'dataType': 'json'

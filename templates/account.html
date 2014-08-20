@@ -56,13 +56,14 @@
 {% block js %}
 <script src="/static/js/sha1.js"></script>
 <script>
-function hash(str){
-    return CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex).slice(0, 16);
+function hash(str, salt){
+    return CryptoJS.SHA1(str + '|' + salt).toString(CryptoJS.enc.Hex).slice(0, 16);
 }
 
 $(function() {
     var url = window.location.pathname;
     $('.save').click(function() {
+        var mail = '{{user.mail}}';
         var name = $('#name').val();
         var cpwd = $('#cpwd').val();
         var npwd = $('#npwd').val();
@@ -89,14 +90,10 @@ $(function() {
             return;
         }
 
-        var salt = '{{user.salt}}';
-        var new_salt = '{{new_salt}}';
+        var cpwd = hash(cpwd, mail);
+        var npwd = hash(npwd, mail);
 
-        var cpwd = hash(cpwd + '|' + salt);
-        //alert(cpwd);
-        var npwd = hash(npwd + '|' + new_salt);
-
-        shire.gui_post(url, {'name': name, 'action':'save', 'cpwd': cpwd, 'npwd': npwd, 'new_salt': new_salt}, function() {
+        shire.gui_post(url, {'name': name, 'action':'save', 'cpwd': cpwd, 'npwd': npwd}, function() {
             alert('Done.');
             window.location.reload();
         }, [$(this)]);

@@ -31,6 +31,8 @@ class BaseHandler(RequestHandler):
     ]
 
     def has_permission(self, path):
+        if path  == '/users' or path.startswith('/user/'):
+            return self.current_user and self.r % 100 == 0
         return True
 
     def prepare(self):
@@ -156,7 +158,7 @@ class UserHandler(BaseHandler):
     def get(self, uid):
         user = self.db.user.find_one({'_id': ObjectId(uid)}) if uid else None
         roles = [r for r in self.roles[1:]]
-        self.render('user-form.html', user=user, roles=roles, new_salt=gen_salt())
+        self.render('user-form.html', user=user, roles=roles)
 
     def post(self, uid):
         action = self.get_argument('action')
@@ -171,17 +173,17 @@ class UserHandler(BaseHandler):
         user = self.db.user.find_one({'_id': ObjectId(uid)}) if uid else {}
         user['valid'] = not user['valid'];
         self.db.user.save(user)
-        self.write(self.dumps(dict(ok=1)))
+        self.write(dict(ok=1))
 
     def save(self, uid):
         mail = self.get_argument('mail')
         name = self.get_argument('name')
         pwd = self.get_argument('pwd', '')
         role = self.get_argument('role')
-        salt = self.get_argument('new_salt')
+        salt = gen_salt()
 
         if re.match(r'^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$', mail) is None:
-            self.write(self.dumps(dict(error_msg='invalid mail')))
+            self.write(dict(error_msg='invalid mail'))
             return
 
         #logging.info('uid:%s, mail:%s, pwd:%s, role:%s' % (uid, mail, '***', role))
@@ -197,12 +199,12 @@ class UserHandler(BaseHandler):
 
         if insert:
             plain_pwd = gen_salt()
-            pwd = hash_pwd(plain_pwd, salt)
+            pwd = hash_pwd(plain_pwd, mail)
 
         if pwd:
             user.update({
                 'salt':salt,
-                'pwd': pwd,
+                'pwd': hash_pwd(pwd, salt),
             })
 
         if insert:
@@ -215,7 +217,7 @@ class UserHandler(BaseHandler):
 
             if insert:
                 send_mail(mail,
-                    'Your New Account At %s' % self.get_main_domain,
+                    'Your New Account At %s' % self.request.host,
                     'Hi, %s!<br>' % name +
                     'a new accont has been created for you. <br>' +
                     'Username: %s<br>' % mail +
@@ -224,9 +226,9 @@ class UserHandler(BaseHandler):
                     'Thanks.',
                     )
 
-            self.write(self.dumps(dict(ok=1)))
+            self.write(dict(ok=1))
         except DuplicateKeyError:
-            self.write(self.dumps(dict(error_msg='duplicate mail')))
+            self.write(dict(error_msg='duplicate mail'))
 
 class AccountHandler(BaseHandler):
     def get(self):
@@ -236,28 +238,28 @@ class AccountHandler(BaseHandler):
         role2sys = {b:a for a, b in self.roles}
         user['role_str'] = role2sys[user['role']] if user['role'] in role2sys else ''
 
-        self.render('account.html', user=user, new_salt=gen_salt())
+        self.render('account.html', user=user)
 
     def post(self):
         user = self.db.user.find_one({'mail':self.m})
         assert user is not None
 
         name = self.get_argument('name')
-        cpwd = self.get_argument('cpwd', '')
-        npwd = self.get_argument('npwd', '')
-        new_salt = self.get_argument('new_salt', '')
+        cpwd = self.get_argument('cpwd')
+        npwd = self.get_argument('npwd')
+        salt = gen_salt()
 
-        if cpwd != user['pwd']:
-            self.write(self.dumps(dict(error_msg='Current password not correct.')))
+        if hash_pwd(cpwd, user['salt']) != user['pwd']:
+            self.write(dict(error_msg='current password not correct.'))
             return
 
         user.update({
             'name': name,
-            'pwd': npwd,
-            'salt': new_salt,
+            'pwd': hash_pwd(npwd, salt),
+            'salt': salt,
         })
         self.db.user.save(user)
-        self.write(self.dumps(dict(ok=1)))
+        self.write(dict(ok=1))
 
 class SigninHandler(BaseHandler):
     allow_anony = True
@@ -267,7 +269,7 @@ class SigninHandler(BaseHandler):
             self.redirect(self.get_next_url(self.current_user['role']))
             return
 
-        self.render('signin.html', passphrase=gen_salt())
+        self.render('signin.html')
 
     def post(self):
         mail = self.get_argument('mail')
@@ -275,14 +277,14 @@ class SigninHandler(BaseHandler):
 
         user = self.db.user.find_one({'mail': mail})
         if user is None:
-            self.write(self.dumps(dict(error_msg='User not exist.')))
+            self.write(dict(error_msg='user not exist.'))
             return
         if hash_pwd(pwd, user['salt']) != user['pwd']:
-            self.write(self.dumps(dict(error_msg='Password incorrect.')))
+            self.write(dict(error_msg='password incorrect.'))
             return
 
         if not user['valid']:
-            self.write(self.dumps(dict(error_msg='Account banned.')))
+            self.write(dict(error_msg='account banned.'))
             return
 
         user['last_login_time'] = time.time()
@@ -305,7 +307,7 @@ class SigninHandler(BaseHandler):
             domain=self.get_main_domain()
         )
 
-        self.write(self.dumps(dict(url=self.get_next_url(user['role']))))
+        self.write(dict(url=self.get_next_url(user['role'])))
 
     def get_next_url(self, role):
         referer = self.request.headers.get('Referer')
