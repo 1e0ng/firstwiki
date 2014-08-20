@@ -12,8 +12,10 @@ Make sure you have successfully installed `MongoDB` and `Python 2.7`
 (To prepare a production environment, you may also need `nginx`, `supervisord`.)
 
 ```
-python scripts/init.py
 pip install -r pip-req.txt
+
+python scripts/init.py
+
 python start.py
 ```
 
