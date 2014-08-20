@@ -1,9 +1,9 @@
 First Wiki
 ==========
 
-This is a wiki in Python. I write this because I didn't find a beautiful wiki.
+This is a wiki in Python. I write this because I don't find a beautiful wiki.
 
-`First Wiki` is based on [shire](https://github.com/liangsun/shire) framework, which means it uses Tornado Web Server, MongoDB, Bootstrap for front-end.
+`First Wiki` is based on [shire](https://github.com/liangsun/shire) framework, which means it uses Tornado Web Server + MongoDB for back-end and Bootstrap for front-end.
 
 ## Getting Started
 
