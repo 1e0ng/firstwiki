@@ -33,7 +33,7 @@ class BaseHandler(RequestHandler):
     def has_permission(self, path):
         if path  == '/users' or path.startswith('/user/'):
             return self.current_user and self.r % 100 == 0
-        return True
+        return self.current_user
 
     def prepare(self):
         uri = self.request.uri
