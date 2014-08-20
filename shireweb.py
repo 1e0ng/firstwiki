@@ -51,14 +51,14 @@ class ShireWeb(object):
         the_settings = self.get_settings(template_path, proj_static_paths)
         the_settings.update(more_settings)
 
-        routes.extend([
+        routes = [
             (r'/upload', UploadHandler),
             (r"/data/img/(.*)", ResourceHandler,
              {
                  "valid_file_types": ["jpg", "png", "wmf"],
                  "path": options.img_store_path
              }),
-        ])
+        ] + routes
 
         self.app = Application(routes, **the_settings)
         self.app.db = self.setup_db()
