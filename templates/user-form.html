@@ -67,9 +67,6 @@
 <script src="/static/js/sha1.js"></script>
 
 <script>
-function hash(str, salt){
-    return CryptoJS.SHA1(str + '|' + salt).toString(CryptoJS.enc.Hex).slice(0, 16);
-}
 
 $(function() {
     var url = window.location.pathname;
