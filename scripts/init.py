@@ -13,7 +13,8 @@ def hash_pwd(pwd, salt):
 class Runner(Scaffold):
     def main(self):
         logging.info('Start to build index...')
-        self.db.page.ensure_index([('url',1)], unique=True)
+        self.db.page.ensure_index([('url', 1)], unique=True)
+        self.db.user.ensure_index([('email', 1)], unique=True)
         logging.info('Indexes built.')
 
         root_user = self.db.user.find_one({'mail': 'root@root'})
