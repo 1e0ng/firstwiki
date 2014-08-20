@@ -10,9 +10,9 @@ body{
 }
 .container {
     width: auto;
+    max-width:860px;
 }
 .page{
-    width: 760px;
     margin:0 auto;
     white-space: pre-wrap;       /* css-3 */
     white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
@@ -23,7 +23,6 @@ body{
 }
 
 footer{
-    width: 760px;
     margin: 20px auto;
     padding: 20px 1px;
     color: #aaa;
@@ -51,7 +50,6 @@ q:before, q:after{
 }
 
 .list-box{
-    width:760px;
     margin:auto;
     padding:50px 0;
 }
