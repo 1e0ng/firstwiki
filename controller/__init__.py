@@ -3,7 +3,7 @@ from handlers import BaseHandler
 
 class HomeHandler(BaseHandler):
     def get(self):
-        pages = list(self.db.page.find(fields={'url':1, 'title':1}, sort=[('viewed', -1), ('_id', 1)]))
+        pages = list(self.db.page.find(fields={'url':1, 'title':1, 'viewed': 1}, sort=[('viewed', -1), ('_id', 1)]))
         self.render('page_list.html', pages=pages)
 
 class AdminHandler(BaseHandler):

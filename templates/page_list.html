@@ -11,6 +11,7 @@
         {% for page in pages %}
         <a href="{{page.url}}" class="list-group-item">
             &nbsp;&nbsp;<span style="display:inline-block;min-width:200px;">{{page.title}}</span>
+            <span class="badge">{{page.viewed}}</span>
         </a>
         {% endfor %}
     </div>
