@@ -94,7 +94,7 @@ class BaseHandler(RequestHandler):
 
     def render(self, template, **kwargs):
         kwargs['navigation_bar'] = [i for i in [
-            #('/users', 'users', 'Users'),
+            ('/users', 'users', 'Users'),
         ] if self.has_permission(i[0])]
         kwargs['site'] = self.db.site.find_one() or {'name': 'Shire'}
 

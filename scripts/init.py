@@ -16,21 +16,29 @@ class Runner(Scaffold):
         self.db.page.ensure_index([('url',1)], unique=True)
         logging.info('Indexes built.')
 
-        root_user = self.db.user.find_one({'mail': 'root@root'}) or {}
-        root_user.update({
-            "name": "root",
-            "created_at": time.time(),
-            "created_by": "sys",
-            "valid": True,
-            "role": 0,
-            "mail": "root@root",
-            "salt": "dzwOrPqGdgOwBqyV"
-        })
-        root_user['pwd'] = hash_pwd(hash_pwd('802debaed8f55ffc', root_user['mail']), root_user['salt'])
+        root_user = self.db.user.find_one({'mail': 'root@root'})
+        if not root_user:
+            root_user = {
+                "name": "root",
+                "created_at": time.time(),
+                "created_by": "sys",
+                "valid": True,
+                "role": 0,
+                "mail": "root@root",
+                "salt": "dzwOrPqGdgOwBqyV",
+            }
+            root_user['pwd'] = hash_pwd(hash_pwd('802debaed8f55ffc', root_user['mail']), root_user['salt'])
+            self.db.user.save(root_user)
+            logging.info('Added root user.')
 
-        self.db.user.save(root_user)
+        site = self.db.site.find_one() or {}
+        if 'name' not in site:
+            site.update({
+                'name': 'First Wiki',
+            })
+            self.db.site.save(site)
+            logging.info('Added site.')
 
-        logging.info('root user created.')
 
 if __name__ == '__main__':
     Runner().run()
