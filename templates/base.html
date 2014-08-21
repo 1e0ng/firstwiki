@@ -66,30 +66,5 @@
         </div>
         {% block js %}
         {% endblock %}
-        <script>
-            function format_ts(ts) {
-                if (!ts) {
-                    return '';
-                }
-                var now = new Date(ts*1000);
-                var date = [ now.getMonth() + 1, now.getDate(), now.getFullYear() ];
-                var time = [ now.getHours(), now.getMinutes()];
-
-                for ( var i = 0; i < 2; i++ ) {
-                    if ( date[i] < 10 ) {
-                        date[i] = "0" + date[i];
-                    }
-                    if ( time[i] < 10 ) {
-                        time[i] = "0" + time[i];
-                    }
-                }
-                return date.join("/") + " " + time.join(":");
-            }
-            $('.timestamp').each(function() {
-                var d = format_ts($(this).text());
-                console.log(d);
-                $(this).text(d);
-            });
-        </script>
     </body>
 </html>
