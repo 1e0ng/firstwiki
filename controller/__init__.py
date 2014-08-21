@@ -1,3 +1,5 @@
+import time
+
 from tornado.web import HTTPError
 from handlers import BaseHandler
 
@@ -23,6 +25,8 @@ class PageEditHandler(BaseHandler):
 
         page['title'] = title
         page['content'] = content
+        page['author'] = self.m
+        page['modified'] = time.time()
         self.db.page.save(page)
 
         self.write({'ok':1})
