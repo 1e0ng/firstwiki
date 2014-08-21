@@ -12,8 +12,8 @@
         <a href="/_{{page.url}}" class="list-group-item">
             &nbsp; &nbsp;<span style="display:inline-block;min-width:270px;">{{page.url}}</span>
             &nbsp;&nbsp;<span style="display:inline-block;min-width:200px;">{{page.title}}</span>
-            &nbsp;&nbsp;<btn class="btn btn-success history">History</btn>
-            <span class="badge">{{page.viewed}}</span>
+            &nbsp;&nbsp;<btn class="right history" style="padding-left:15px;"><i class="glyphicon glyphicon-time"></i></btn>
+            <span class="badge" style="">{{page.viewed}}</span>
         </a>
         {% endfor %}
     </div>
