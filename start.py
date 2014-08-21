@@ -13,6 +13,8 @@ if __name__ == "__main__":
 
         (r'/_', 'controller.AdminHandler'),
         (r'/_(/.*)', 'controller.PageEditHandler'),
+        (r'/_hl(/.*)', 'controller.HistoryListHandler'),
+        (r'/_hp/(.*)', 'controller.HistoryPageHandler'),
 
         (r'/signin', 'handlers.SigninHandler'),
         (r'/signout', 'handlers.SignoutHandler'),

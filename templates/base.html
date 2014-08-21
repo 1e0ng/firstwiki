@@ -8,6 +8,10 @@
         <link href="{{static_url('css/shire.css')}}" rel="stylesheet" media="screen">
         {% block css %}
         {% endblock %}
+        <script src="{{static_url('js/jquery-1.11.1.min.js')}}"></script>
+        <script src="{{static_url('js/jquery.cookie.js')}}"></script>
+        <script src="{{static_url('js/bootstrap.min.js')}}"></script>
+        <script src="{{static_url('js/shire.js')}}"></script>
     </head>
     <body>
         <div class="container">
@@ -60,12 +64,32 @@
                 Enjoy Study, 2014
             </footer>
         </div>
-        <script src="{{static_url('js/jquery-1.11.1.min.js')}}"></script>
-        <script src="{{static_url('js/jquery.cookie.js')}}"></script>
-        <script src="{{static_url('js/bootstrap.min.js')}}"></script>
-        <script src="{{static_url('js/shire.js')}}"></script>
-
         {% block js %}
         {% endblock %}
+        <script>
+            function format_ts(ts) {
+                if (!ts) {
+                    return '';
+                }
+                var now = new Date(ts*1000);
+                var date = [ now.getMonth() + 1, now.getDate(), now.getFullYear() ];
+                var time = [ now.getHours(), now.getMinutes()];
+
+                for ( var i = 0; i < 2; i++ ) {
+                    if ( date[i] < 10 ) {
+                        date[i] = "0" + date[i];
+                    }
+                    if ( time[i] < 10 ) {
+                        time[i] = "0" + time[i];
+                    }
+                }
+                return date.join("/") + " " + time.join(":");
+            }
+            $('.timestamp').each(function() {
+                var d = format_ts($(this).text());
+                console.log(d);
+                $(this).text(d);
+            });
+        </script>
     </body>
 </html>

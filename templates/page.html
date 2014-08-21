@@ -2,4 +2,8 @@
 {% block body %}
 <div class="page"><h1><br>{{page.title}}</h1><div class="content"><br>{{page.content}}</div>
 </div>
+<br>
+<div style="color:#aaa;">
+    Last modified by {{page.author}} at <span class="timestamp">{{page.modified}}</span>.
+</div>
 {% endblock %}

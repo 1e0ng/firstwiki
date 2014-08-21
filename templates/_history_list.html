@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="list-box">
+    <div class="list-group">
+        {% if not history %}
+        <div class="list-group-item">
+            No history
+        </div>
+        {% endif %}
+        {% for page in history %}
+        <a href="/_hp/{{page._id}}" class="list-group-item">
+            &nbsp; &nbsp;<span style="display:inline-block;min-width:270px;">{{page.title}}</span>
+            &nbsp;&nbsp;<span class="timestamp" style="display:inline-block;min-width:200px;">{{page.modified}}</span>
+            &nbsp;&nbsp;<span style="display:inline-block;min-width:200px;">{{page.author}}</span>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

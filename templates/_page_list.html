@@ -12,6 +12,7 @@
         <a href="/_{{page.url}}" class="list-group-item">
             &nbsp; &nbsp;<span style="display:inline-block;min-width:270px;">{{page.url}}</span>
             &nbsp;&nbsp;<span style="display:inline-block;min-width:200px;">{{page.title}}</span>
+            &nbsp;&nbsp;<btn class="btn btn-success history">History</btn>
             <span class="badge">{{page.viewed}}</span>
         </a>
         {% endfor %}
@@ -36,6 +37,11 @@ $('#new').click(function() {
     else {
         window.location.href = '/_' + url;
     }
+    return false;
+});
+$('.history').click(function() {
+    var url = $(this).parent().attr('href');
+    location.href = '/_hl' + url.slice(2);
     return false;
 });
 </script>
