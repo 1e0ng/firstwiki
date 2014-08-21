@@ -223,6 +223,7 @@ class UserHandler(BaseHandler):
                     'Your New Account At %s' % self.request.host,
                     'Hi, %s!<br>' % name +
                     'a new accont has been created for you. <br>' +
+                    'Website: %s<br>' % self.request.host +
                     'Username: %s<br>' % mail +
                     'Password: %s<br>' % plain_pwd +
                     'Modify your password once you login. <br>' +
