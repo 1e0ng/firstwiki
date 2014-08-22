@@ -31,12 +31,10 @@ class BaseHandler(RequestHandler):
     ]
 
     def has_permission(self, path):
-        if not self.current_user:
-            return False
         if path  == '/users' or path.startswith('/user/'):
-            return self.r % 100 == 0
+            return self.current_user and self.r % 100 == 0
         if path.startswith('/_'):
-            return self.r % 100 == 0 or self.r == 101
+            return self.current_user and self.r in (0, 100, 101)
         return True
 
     def prepare(self):
