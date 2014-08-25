@@ -4,6 +4,7 @@ import traceback
 
 from tornado.web import HTTPError
 from bson.objectid import ObjectId
+import markdown
 
 from handlers import BaseHandler
 
@@ -67,6 +68,7 @@ class PageHandler(BaseHandler):
         if not page:
             raise HTTPError(404)
         self.db.page.update({'_id': page['_id']}, {'$inc': {'viewed': 1}})
+        page['content'] = markdown.markdown(page['content'])
         self.render('page.html', page=page)
 
 class HistoryListHandler(BaseHandler):
@@ -79,4 +81,5 @@ class HistoryPageHandler(BaseHandler):
         page = self.db.history.find_one({'_id': ObjectId(_id)})
         if not page:
             raise HTTPError(404)
+        page['content'] = markdown.markdown(page['content'])
         self.render('page.html', page=page)
