@@ -1,8 +1,8 @@
 var shire = {};
 
 function getCookie(name) {
-    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
-    return r ? r[1] : undefined;
+    var r = document.cookie.match(new RegExp("\\b" + name + "=([^;]*)\\b", "g"));
+    return r ? r[r.length - 1].substring(name.length + 1) : undefined;
 }
 
 shire.ajax = function(url, type, args, callback){
