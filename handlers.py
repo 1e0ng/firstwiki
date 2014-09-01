@@ -330,7 +330,7 @@ class UploadHandler(BaseHandler):
         pass
 
     def get(self):
-        imgs = list(self.db.img.find(sort=[('_id', -1)]))
+        imgs = list(self.db.img.find(sort=[('_id', -1)]).limit(100))
         self.render('upload.html', imgs=imgs)
 
     def post(self):
