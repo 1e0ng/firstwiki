@@ -15,12 +15,16 @@
         </div>
         {% endif %}
         {% for img in imgs %}
-        <div class="list-group-item">
-            <span style="min-width:280px;display:inline-block;margin-right:20px;">
-                <img src="" style="max-width:160px;max-height:80px" title="{{img.name}}" />
-            </span>
-            <span style="line-height:80px" class="url">
+        <div class="list-group-item upload">
+            <span class="thumb">
+                <img src="" title="{{img.name}}" />
+            </span><span class="url">
                 {{- img.url -}}
+            </span>
+            <span class="del">
+                <button class="btn btn-danger btn-xs">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </button>
             </span>
         </div>
         {% endfor %}
@@ -35,6 +39,19 @@ $(function() {
         var url = $(this).parent().siblings('.url').text();
         $(this).error(function() {$(this).parent().html($(this).attr('title'));})
         .attr('src', url);
+    });
+    $('.del button').click(function() {
+
+        var name = $(this).parents('.upload').find('img').attr('title');
+        if (confirm('Really delete file ' + name + ' ?')) {
+            var url = $(this).parents('.upload').find('.url').text();
+            shire.post('/upload', {action:'delete', url:url}, function() {
+                location.reload();
+            });
+        }
+        else {
+            return false;
+        }
     });
 });
 </script>

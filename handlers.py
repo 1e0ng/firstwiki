@@ -334,6 +334,21 @@ class UploadHandler(BaseHandler):
         self.render('upload.html', imgs=imgs)
 
     def post(self):
+        action = self.get_argument('action', 'upload')
+        if action == 'delete':
+            self.delete()
+        else:
+            self.upload()
+
+    def delete(self):
+        url = self.get_argument('url')
+        filename = url.split('/')[-1]
+        data_file.delete(self.img_store_path, filename)
+
+        self.db.img.remove({'url':url})
+        self.write({'ok':1})
+
+    def upload(self):
         f = self.request.files['file'][0]
         f_data = f['body']
         f_type = f['filename'].split('.')[-1]

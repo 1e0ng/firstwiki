@@ -95,3 +95,19 @@ q:before, q:after{
 .over{
     border:2px dashed #99f;
 }
+.upload span{
+    margin-right:20px;
+    line-height:80px;
+}
+.upload .thumb{
+    display:inline-block;
+    min-width:280px;
+    margin-right:20px;
+}
+.upload .thumb img{
+    max-width:160px;
+    max-height:80px;
+}
+.upload .del{
+    float:right;
+}

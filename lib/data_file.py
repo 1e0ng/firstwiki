@@ -27,6 +27,16 @@ def ensure_dir_exist(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
+def delete(root, filename):
+    pathname = fullpath(root, filename)
+    back_path = '.' + pathname
+    abspath = os.path.abspath(pathname)
+    b_abspath = os.path.abspath(back_path)
+
+    dirname = os.path.dirname(b_abspath)
+    ensure_dir_exist(dirname)
+    if os.path.exists(abspath):
+        os.rename(abspath, b_abspath)
 
 def save(root, content, ext=""):
     digest = md5.new(content).hexdigest()
