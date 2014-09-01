@@ -96,6 +96,7 @@ class BaseHandler(RequestHandler):
         kwargs['navigation_bar'] = [i for i in [
             ('/users', 'users', 'Users'),
             ('/_', 'edit', 'Edit'),
+            ('/upload', 'upload', 'Upload'),
         ] if self.has_permission(i[0])]
         kwargs['site'] = self.db.site.find_one() or {'name': 'Shire'}
 
@@ -328,6 +329,10 @@ class UploadHandler(BaseHandler):
     def check_xsrf_cookie(self):
         pass
 
+    def get(self):
+        imgs = list(self.db.img.find(sort=[('_id', -1)]))
+        self.render('upload.html', imgs=imgs)
+
     def post(self):
         f = self.request.files['file'][0]
         f_data = f['body']
@@ -335,6 +340,11 @@ class UploadHandler(BaseHandler):
         f_url = self.img_prefix + data_file.save(
             self.img_store_path, f_data, f_type)
 
-        self.write(f_url)
+        img = self.db.img.find_one({'url': f_url}) or {'url': f_url, 'created_at': time.time()}
+        img['modified_at'] = time.time()
+        img['name'] = f['filename']
+        self.db.img.save(img)
+
+        self.redirect('/upload')
         logging.info("%s uploaded img %s",
                      self.current_user['email'], f_url)

@@ -15,8 +15,8 @@ def define_app_options():
 
     define('port', default=8004)
 
-    define('img_prefix', '/data/img/')
-    define('img_store_path', 'data/img/')
+    define('img_prefix', '/upload/')
+    define('img_store_path', 'upload/')
 
     define('smtp_host', 'smtp.xx.com')
     define('smtp_username', 'user@domain')

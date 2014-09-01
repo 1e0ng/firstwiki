@@ -53,9 +53,9 @@ class ShireWeb(object):
 
         routes = [
             (r'/upload', UploadHandler),
-            (r"/data/img/(.*)", ResourceHandler,
+            (r"/upload/(.*)", ResourceHandler,
              {
-                 "valid_file_types": ["jpg", "png", "wmf"],
+                 "valid_file_types": [".*"],
                  "path": options.img_store_path
              }),
         ] + routes

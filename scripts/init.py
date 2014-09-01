@@ -14,6 +14,7 @@ class Runner(Scaffold):
     def main(self):
         logging.info('Start to build index...')
         self.db.page.ensure_index([('url', 1)], unique=True)
+        self.db.img.ensure_index([('url', 1)], unique=True)
         self.db.user.ensure_index([('mail', 1)], unique=True)
         self.db.history.ensure_index([('redirect', 'hashed')])
         self.db.history.ensure_index([('url', 'hashed')])

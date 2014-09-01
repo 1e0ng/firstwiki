@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="list-box">
+    <form method="post" enctype="multipart/form-data">
+        <label for="file">Filename:</label>
+        <input type="file" name="file" id="file"><br>
+        <input type="submit" name="submit" value="Submit" class="btn btn-success">
+    </form>
+    <hr>
+    <div class="list-group">
+        {% if not imgs %}
+        <div class="list-group-item">
+            Currently no uploads.
+        </div>
+        {% endif %}
+        {% for img in imgs %}
+        <div class="list-group-item">
+            <span style="min-width:280px;display:inline-block;margin-right:20px;">
+                <img src="" style="max-width:160px;max-height:80px" title="{{img.name}}" />
+            </span>
+            <span style="line-height:80px" class="url">
+                {{- img.url -}}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script>
+$(function() {
+    $('.list-group-item img').each(function() {
+        var url = $(this).parent().siblings('.url').text();
+        $(this).error(function() {$(this).parent().html($(this).attr('title'));})
+        .attr('src', url);
+    });
+});
+</script>
+{% endblock %}
