@@ -369,6 +369,13 @@ class SignupHandler(BaseHandler):
         except DuplicateKeyError:
             self.write(dict(error_msg='duplicate mail'))
 
+    def get_next_url(self, role):
+        referer = self.request.headers.get('Referer')
+        if referer and referer != self.request.full_url():
+            return referer
+
+        return '/'
+
 class SignoutHandler(BaseHandler):
     def get(self):
         self.clear_cookie('user', domain=self.get_main_domain())
