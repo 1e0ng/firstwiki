@@ -35,7 +35,7 @@ class BaseHandler(RequestHandler):
             return self.current_user and self.r % 100 == 0
         if path.startswith('/_'):
             return self.current_user and self.r in (0, 100, 101)
-        return True
+        return self.current_user
 
     def prepare(self):
         uri = self.request.uri
@@ -55,6 +55,9 @@ class BaseHandler(RequestHandler):
 
     def get_logout_url(self):
         return '/signout'
+
+    def get_signup_url(self):
+        return '/signup'
 
     def get_main_domain(self):
         return self.request.host.split(':')[0]
@@ -318,6 +321,53 @@ class SigninHandler(BaseHandler):
             return referer
 
         return '/'
+
+class SignupHandler(BaseHandler):
+    allow_anony = True
+    def get(self):
+        self.render('signup.html')
+
+    def post(self):
+        mail = self.get_argument('mail')
+
+        if re.match(r'^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$', mail) is None:
+            self.write(dict(error_msg='invalid mail'))
+            return
+        name = mail.split('@')[0]
+        salt = gen_salt()
+
+        plain_pwd = gen_salt()
+        pwd = hash_pwd(hash_pwd(plain_pwd, mail), salt)
+
+
+        user = {
+            'mail': mail,
+            'name': name,
+            'role': 102,
+            'salt': salt,
+            'pwd': pwd,
+            'created_at': time.time(),
+            'created_by': 'signup',
+            'valid': True,
+        }
+
+        try:
+            self.db.user.save(user)
+
+            send_mail(mail,
+                'Your New Account At %s' % self.request.host,
+                'Hi, %s!<br>' % name +
+                'a new accont has been created for you. <br>' +
+                'Website: %s<br>' % self.request.host +
+                'Username: %s<br>' % mail +
+                'Password: %s<br>' % plain_pwd +
+                'Modify your password once you login. <br>' +
+                'Thanks.',
+                )
+
+            self.write(dict(url=self.get_next_url(user['role'])))
+        except DuplicateKeyError:
+            self.write(dict(error_msg='duplicate mail'))
 
 class SignoutHandler(BaseHandler):
     def get(self):

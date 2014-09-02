@@ -9,7 +9,6 @@ import markdown
 from handlers import BaseHandler
 
 class HomeHandler(BaseHandler):
-    allow_anony = True
     def get(self):
         pages = list(self.db.page.find(fields={'url':1, 'title':1, 'viewed': 1}, sort=[('viewed', -1), ('_id', 1)]))
         self.render('page_list.html', pages=pages)
@@ -62,7 +61,6 @@ class PageEditHandler(BaseHandler):
         self.write({'ok':1})
 
 class PageHandler(BaseHandler):
-    allow_anony = True
     def get(self, url):
         page = self.db.page.find_one({'url': url})
         if not page:

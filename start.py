@@ -17,6 +17,7 @@ if __name__ == "__main__":
         (r'/_hp/(.*)', 'controller.HistoryPageHandler'),
 
         (r'/signin', 'handlers.SigninHandler'),
+        (r'/signup', 'handlers.SignupHandler'),
         (r'/signout', 'handlers.SignoutHandler'),
 
         (r'(.*)', 'controller.PageHandler'),
