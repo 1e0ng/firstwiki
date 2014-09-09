@@ -11,16 +11,16 @@ from handlers import BaseHandler
 
 class HomeHandler(BaseHandler):
     def get(self):
-        pages = list(self.db.page.find(fields={'url':1, 'title':1, 'viewed': 1}, sort=[('title', 1), ('_id', 1)]))
+        pages = list(self.db.page.find(fields={'url':1, 'title':1, 'viewed': 1}))
         orders = {x['pid']: x['order'] for x in self.db.order.find()}
-        pages.sort(key=lambda x: orders.get(x['_id'], 0))
+        pages.sort(key=lambda x: (orders.get(x['_id'], 0), -long(str(x['_id']), 16)))
         self.render('page_list.html', pages=pages)
 
 class AdminHandler(BaseHandler):
     def get(self):
-        pages = list(self.db.page.find(fields={'url':1, 'title':1, 'viewed': 1}, sort=[('title', 1), ('_id', 1)]))
+        pages = list(self.db.page.find(fields={'url':1, 'title':1, 'viewed': 1}))
         orders = {x['pid']: x['order'] for x in self.db.order.find()}
-        pages.sort(key=lambda x: orders.get(x['_id'], 0))
+        pages.sort(key=lambda x: (orders.get(x['_id'], 0), -long(str(x['_id']), 16)))
         self.render('_page_list.html', pages=pages)
 
     def post(self):
