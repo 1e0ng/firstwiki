@@ -1,4 +1,5 @@
 import time
+import json
 import logging
 import traceback
 
@@ -11,12 +12,24 @@ from handlers import BaseHandler
 class HomeHandler(BaseHandler):
     def get(self):
         pages = list(self.db.page.find(fields={'url':1, 'title':1, 'viewed': 1}, sort=[('title', 1), ('_id', 1)]))
+        orders = {x['pid']: x['order'] for x in self.db.order.find()}
+        pages.sort(key=lambda x: orders.get(x['_id'], 0))
         self.render('page_list.html', pages=pages)
 
 class AdminHandler(BaseHandler):
     def get(self):
         pages = list(self.db.page.find(fields={'url':1, 'title':1, 'viewed': 1}, sort=[('title', 1), ('_id', 1)]))
+        orders = {x['pid']: x['order'] for x in self.db.order.find()}
+        pages.sort(key=lambda x: orders.get(x['_id'], 0))
         self.render('_page_list.html', pages=pages)
+
+    def post(self):
+        m =  self.get_argument('m')
+        m = json.loads(m)
+        self.db.order.drop()
+        orders = [{'pid': ObjectId(k), 'order': v} for k, v in m.items()]
+        self.db.order.insert(orders)
+        self.write({'ok':1})
 
 class PageEditHandler(BaseHandler):
     def get(self, url):

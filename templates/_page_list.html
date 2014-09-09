@@ -9,10 +9,11 @@
         </div>
         {% endif %}
         {% for page in pages %}
-        <a href="/_{{page.url}}" class="list-group-item">
+        <a href="/_{{page.url}}" class="list-group-item" id="{{page._id}}">
+            <i class="move glyphicon glyphicon-list"></i>
             &nbsp; &nbsp;<span style="display:inline-block;min-width:270px;">{{page.url}}</span>
             &nbsp;&nbsp;<span style="display:inline-block;min-width:200px;">{{page.title}}</span>
-            &nbsp;&nbsp;<btn class="right history" style="padding-left:15px;"><i class="glyphicon glyphicon-time"></i></btn>
+            &nbsp;&nbsp;<span class="right history" style="padding-left:15px;"><i class="glyphicon glyphicon-time"></i></span>
             <span class="badge" style="">{{page.viewed}}</span>
         </a>
         {% endfor %}
@@ -44,5 +45,89 @@ $('.history').click(function() {
     location.href = '/_hl' + url.slice(2);
     return false;
 });
+
+
+var dragSrc = null;
+function handleDragStart(e) {
+    dragSrc = $(this);
+
+    e.originalEvent.dataTransfer.effectAllowed = 'move';
+    e.originalEvent.dataTransfer.setData('text/plain', this.innerHTML);
+}
+
+function handleDragOver(e) {
+    if (e.originalEvent.preventDefault) {
+        e.originalEvent.preventDefault();
+    }
+
+    e.originalEvent.dataTransfer.dropEffect = 'move';
+    return false;
+}
+
+function handleDragEnter(e) {
+    $(this).addClass('over');
+}
+
+function handleDragLeave(e) {
+    $(this).removeClass('over');
+}
+
+function handleDragEnd(e) {
+    $('.over').removeClass('over');
+}
+
+function handleDrop(e) {
+    if (e.originalEvent.stopPropagation) {
+        e.originalEvent.stopPropagation();
+    }
+
+    if (!dragSrc || dragSrc.attr('id') == $(this).attr('id')) {
+        return false;
+    }
+
+    $(this).removeClass('over');
+
+    if (!dragSrc.attr('draggable')) {
+        return false;
+    }
+
+    var c = dragSrc.wrap('<p/>').parent().html();
+    dragSrc.unwrap();
+    dragSrc.remove();
+
+    $(this).after(c);
+    draggable($(this).next());
+
+    update();
+    return false;
+}
+
+function update() {
+    var m = {}, order = 0;
+    $('a.list-group-item').each(function() {
+        m[$(this).attr('id')] = order++;
+    });
+
+    shire.post('/_', {m: JSON.stringify(m)}, function(){
+        //location.reload();
+    });
+}
+
+function draggable(e) {
+    e.attr('draggable', 'true');
+    e.off();
+
+    e.on('dragstart', handleDragStart);
+    e.on('dragend', handleDragLeave);
+
+    e.on('dragenter', handleDragEnter);
+    e.on('dragover', handleDragOver);
+    e.on('dragleave', handleDragLeave);
+    e.on('drop', handleDrop);
+
+    e.on('dragend', handleDragLeave);
+
+}
+draggable($('a.list-group-item'));
 </script>
 {% endblock %}

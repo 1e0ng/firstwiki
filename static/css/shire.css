@@ -114,3 +114,11 @@ q:before, q:after{
 .upload .del{
     float:right;
 }
+
+.move.glyphicon-list {
+    cursor:move;
+}
+a.list-group-item span{
+    pointer-events:none;
+}
+
