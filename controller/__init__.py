@@ -47,9 +47,9 @@ class PageEditHandler(BaseHandler):
         }
         return self.db.page.insert(page)
 
-    def update(self, page, title, content):
+    def update(self, page, title, content, new_url):
         self.db.page.remove({'_id': page['_id']})
-        pid = self.create(page['url'], title, content, page['viewed'])
+        pid = self.create(new_url, title, content, page['viewed'])
 
         self.db.history.update({'redirect': page['_id']}, {'$set':{'redirect': pid}}, multi=True)
         page['redirect'] = pid
@@ -58,14 +58,19 @@ class PageEditHandler(BaseHandler):
     def post(self, url):
         title = self.get_argument('title')
         content = self.get_argument('content')
-
-        page = self.db.page.find_one({'url': url})
+        new_url = self.get_argument('new_url')
 
         try:
+            if new_url != url:
+                if self.db.page.find_one({'url': new_url}):
+                    raise Exception('URL duplicated')
+
+            page = self.db.page.find_one({'url': url})
+
             if not page:
                 self.create(url, title, content)
             else:
-                self.update(page, title, content)
+                self.update(page, title, content, new_url)
         except Exception, e:
             error_msg = unicode(e) or traceback.format_exc()
             logging.warn(traceback.format_exc())
