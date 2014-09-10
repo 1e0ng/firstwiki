@@ -44,6 +44,7 @@ class PageEditHandler(BaseHandler):
             'author': self.m,
             'modified': time.time(),
             'viewed': viewed,
+            'deleted': False,
         }
         return self.db.page.insert(page)
 
@@ -57,7 +58,7 @@ class PageEditHandler(BaseHandler):
 
     def delete(self, url):
         page = self.db.page.find_one({'url': url})
-        deleted = not page.get('deleted', False)
+        deleted = not page['deleted']
         self.db.page.update({'_id':page['_id']}, {'$set':{'deleted': deleted}})
 
     def post(self, url):
