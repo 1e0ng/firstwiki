@@ -120,5 +120,6 @@ q:before, q:after{
 }
 a.list-group-item span{
     pointer-events:none;
+    display:inline-block;
 }
 

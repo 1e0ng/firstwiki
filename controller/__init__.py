@@ -11,14 +11,14 @@ from handlers import BaseHandler
 
 class HomeHandler(BaseHandler):
     def get(self):
-        pages = list(self.db.page.find(fields={'url':1, 'title':1, 'viewed': 1}))
+        pages = list(self.db.page.find({'deleted': False}, fields={'url':1, 'title':1, 'viewed': 1}))
         orders = {x['pid']: x['order'] for x in self.db.order.find()}
         pages.sort(key=lambda x: (orders.get(x['_id'], 0), -long(str(x['_id']), 16)))
         self.render('page_list.html', pages=pages)
 
 class AdminHandler(BaseHandler):
     def get(self):
-        pages = list(self.db.page.find(fields={'url':1, 'title':1, 'viewed': 1}))
+        pages = list(self.db.page.find(fields={'url':1, 'title':1, 'viewed': 1, 'deleted':1}))
         orders = {x['pid']: x['order'] for x in self.db.order.find()}
         pages.sort(key=lambda x: (orders.get(x['_id'], 0), -long(str(x['_id']), 16)))
         self.render('_page_list.html', pages=pages)
@@ -55,22 +55,31 @@ class PageEditHandler(BaseHandler):
         page['redirect'] = pid
         self.db.history.insert(page)
 
+    def delete(self, url):
+        page = self.db.page.find_one({'url': url})
+        deleted = not page.get('deleted', False)
+        self.db.page.update({'_id':page['_id']}, {'$set':{'deleted': deleted}})
+
     def post(self, url):
-        title = self.get_argument('title')
-        content = self.get_argument('content')
-        new_url = self.get_argument('new_url')
-
+        action = self.get_argument('action')
         try:
-            if new_url != url:
-                if self.db.page.find_one({'url': new_url}):
-                    raise Exception('URL duplicated')
-
-            page = self.db.page.find_one({'url': url})
-
-            if not page:
-                self.create(url, title, content)
+            if action == 'delete':
+                self.delete(url)
             else:
-                self.update(page, title, content, new_url)
+                title = self.get_argument('title')
+                content = self.get_argument('content')
+                new_url = self.get_argument('new_url')
+
+                if new_url != url:
+                    if self.db.page.find_one({'url': new_url}):
+                        raise Exception('URL duplicated')
+
+                page = self.db.page.find_one({'url': url})
+
+                if not page:
+                    self.create(url, title, content)
+                else:
+                    self.update(page, title, content, new_url)
         except Exception, e:
             error_msg = unicode(e) or traceback.format_exc()
             logging.warn(traceback.format_exc())

@@ -27,6 +27,8 @@
         <div class="col-sm-2"></div>
         <div class="col-sm-10">
             <button class="save btn btn-success">Save</button>
+            &nbsp;
+            <button class="delete btn btn-danger">{% if page.deleted %}Restore{% else %} Delete {% endif %}</button>
         </div>
     </div>
 </div>
@@ -41,7 +43,12 @@ $(function() {
         var content = $('#content').val();
         var new_url = $('#url').val();
 
-        shire.gui_post(url, {title:title, content:content, new_url:new_url}, function() {
+        shire.gui_post(url, {action:'update', title:title, content:content, new_url:new_url}, function() {
+            location.href = '/_';
+        }, [$(this)]);
+    });
+    $('.delete').click(function() {
+        shire.gui_post(url, {action:'delete'}, function() {
             location.href = '/_';
         }, [$(this)]);
     });
